@@ -3,10 +3,12 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../schemas/user.js';
 import Role from '../schemas/role.js';
 import crypto from 'crypto';
+import dotenv from 'dotenv';
+dotenv.config();
 
 passport.use(new GoogleStrategy({
-  clientID: "458882725914-at0ivp1s3rnibu0ul9d915r7e64ht6bu.apps.googleusercontent.com",
-  clientSecret: "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",
+  clientID: process.env.GOOGLE_CLIENT_ID,
+clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 callbackURL: "http://localhost:3000/auth/google/callback"
 },async (accessToken, refreshToken, profile, done) => {
     try {
