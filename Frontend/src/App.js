@@ -23,6 +23,7 @@ import SingleUserPage from './Admin/Pages/SingleUserPage';
 import SingleProduct from './Admin/Pages/SingleProduct';
 import MyOrders from './Pages/Orders/MyOrders';
 import Invoice from './Pages/Orders/Invoice';
+import GoogleSuccess from './Auth/Login/google-success'; 
 
 
 
@@ -57,6 +58,7 @@ function App() {
             <Route path='/admin/home' element={<AdminHomePage />} />
             <Route path='/admin/home/user/:id' element={<SingleUserPage />} />
             <Route path='/admin/home/product/:type/:id' element={<SingleProduct />} />
+            <Route path='/google-success' element={<GoogleSuccess />} /> 
           </Routes>
         </div>
         <MobileNavigation />

@@ -13,6 +13,12 @@ var usersRouter = require('./routes/users');
 var initRoles = require('./utils/initRoles');
 var initAdmin = require('./utils/initAdmin');
 var uploadRoutes = require('./routes/upload');
+var passport = require('passport');
+
+// ⚠️ BẮT BUỘC: Gọi file cấu hình strategy TRƯỚC khi dùng router
+require('./utils/passport');
+
+
 
 var app = express();
 
@@ -53,6 +59,7 @@ app.use('/order', require('./routes/order'));
 app.use('/wishlist', require('./routes/wishlist'));
 app.use('/invoice', require('./routes/invoice'));
 app.use('/review', require('./routes/review'));
+app.use(passport.initialize());
 
 
 // catch 404 and forward to error handler

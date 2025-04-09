@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { MdLockOutline } from 'react-icons/md'
-import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
+import { RiEyeFill, RiEyeOffFill,RiGoogleLine } from 'react-icons/ri';
 
 import CopyRight from '../../Components/CopyRight/CopyRight'
 
@@ -138,6 +138,42 @@ const Login = () => {
               </Link>
             </Grid>
           </Grid>
+          <Button
+  fullWidth
+  variant="outlined"
+  sx={{
+    mt: 2,
+    mb: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1.5,
+    textTransform: 'none',
+    fontWeight: 'bold',
+    borderRadius: 2,
+    boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+    backgroundColor: '#fff',
+    '&:hover': {
+      backgroundColor: '#e6f0fd',
+    },
+  }}
+  onClick={() => window.location.href = "http://localhost:3000/auth/google"}
+>
+  <Box
+    sx={{
+      p: 0.7,
+      borderRadius: '50%',
+      backgroundColor: '#4285F4',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <RiGoogleLine size={20} color="#fff" />
+  </Box>
+  Sign in with Google
+</Button>
+
         </Box>
       </Box>
       <CopyRight sx={{ mt: 8, mb: 4 }} />

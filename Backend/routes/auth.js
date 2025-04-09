@@ -14,6 +14,8 @@ let FormData = require('form-data')
 let axios = require('axios')
 let fs = require('fs')
 let User = require('../schemas/user');
+let passport = require('passport');
+
 
 
 
@@ -140,5 +142,23 @@ router.get("/avatars/:filename", function (req, res, next) {
     let pathAvatar = path.join(avatarDir, req.params.filename)
     res.sendFile(pathAvatar)
 })
+
+router.get('/google',
+    passport.authenticate('google', { scope: ['openid', 'profile', 'email'] })
+  );
+  
+  // Callback sau khi xác thực xong
+  router.get('/google/callback',
+    passport.authenticate('google', { session: false }),
+    (req, res) => {
+      // Tạo JWT token
+      const token = jwt.sign({
+        id: req.user._id
+      }, constants.SECRET_KEY, { expiresIn: '1h' });
+  
+      // Gửi token về frontend (có thể redirect kèm query param hoặc gửi JSON)
+      res.redirect(`http://localhost:3001/google-success?token=${token}&userId=${req.user._id}`);
+    }
+  );
 
 module.exports = router;
