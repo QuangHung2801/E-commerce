@@ -10,6 +10,9 @@ let cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var initRoles = require('./utils/initRoles');
+var initAdmin = require('./utils/initAdmin');
+var uploadRoutes = require('./routes/upload');
 
 var app = express();
 
@@ -18,15 +21,20 @@ app.use(cors({
 }))
 
 mongoose.connect("mongodb://0.0.0.0/Ecommerce");
-mongoose.connection.on('connected',()=>{
+mongoose.connection.on('connected',async()=>{
   console.log("connected");
+  await initRoles();
+  await initAdmin();
 })
 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Sử dụng route upload
+app.use('/api', uploadRoutes);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,7 +48,11 @@ app.use('/menus', require('./routes/menus'));
 app.use('/roles', require('./routes/roles'));
 app.use('/products', require('./routes/products'));
 app.use('/categories', require('./routes/categories'));
-
+app.use('/cart', require('./routes/cart'));
+app.use('/order', require('./routes/order'));
+app.use('/wishlist', require('./routes/wishlist'));
+app.use('/invoice', require('./routes/invoice'));
+app.use('/review', require('./routes/review'));
 
 
 // catch 404 and forward to error handler

@@ -9,10 +9,24 @@ const constants = require('../utils/constants');
 /* GET users listing. */
 
 router.get('/',check_authentication,check_authorization(constants.MOD_PERMISSION), async function (req, res, next) {
-  console.log(req.headers.authorization);
+  console.log("Authorization header in backend:", req.headers.authorization); // Log token từ header
+  console.log("User from middleware:", req.user); // Log thông tin người dùng từ middleware
   let users = await userController.GetAllUser();
   CreateSuccessResponse(res, 200, users)
 });
+router.get('/:id', async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await userController.GetUserByID(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    CreateSuccessResponse(res, 200, user);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/', async function (req, res, next) {
   try {
     let body = req.body;
@@ -26,9 +40,9 @@ router.put('/:id', async function (req, res, next) {
   try {
     let body = req.body;
     let updatedResult = await userController.UpdateAnUser(req.params.id, body);
-    CreateSuccessResponse(res, 200, updatedResult)
+    CreateSuccessResponse(res, 200, updatedResult);
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 

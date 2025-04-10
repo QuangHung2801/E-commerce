@@ -10,62 +10,61 @@ import { MdLockOutline } from 'react-icons/md'
 import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 import CopyRight from '../../../Components/CopyRight/CopyRight'
 
-
-
 const AdminLogin = () => {
 
-  const [credentials, setCredentials] = useState({ email: "", password: "", key: "" })
+  const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleOnChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value })
-  }
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
   useEffect(() => {
     let auth = localStorage.getItem('Authorization');
     if (auth) {
-      navigate("/")
+        navigate("/admin/home");
     }
-  }, [])
+  }, []);
+
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    e.preventDefault();
+
     try {
-      if (!credentials.email && !credentials.password) {
-        toast.error("All fields are required", { autoClose: 500, theme: 'colored' })
-      }
-      else if (!emailRegex.test(credentials.email)) {
-        toast.error("Please enter a valid email", { autoClose: 500, theme: 'colored' })
-      }
-      else if (credentials.password.length < 5) {
-        toast.error("Please enter valid password", { autoClose: 500, theme: 'colored' })
-      }
-      else if (credentials.email && credentials.password) {
-        const sendAuth = await axios.post(process.env.REACT_APP_ADMIN_LOGIN,
-          {
-            email: credentials.email,
-            password: credentials.password,
-            key: credentials.key
-          })
-        const receive = await sendAuth.data
+        const sendAuth = await axios.post('http://localhost:3000/auth/login', {
+            username: credentials.username,
+            password: credentials.password
+        });
+
+        const receive = sendAuth.data;
+
         if (receive.success === true) {
-          toast.success("Login Successfully", { autoClose: 500, theme: 'colored' })
-          localStorage.setItem('Authorization', receive.authToken)
-          navigate('/admin/home')
+            toast.success("Login Successfully", { autoClose: 500, theme: 'colored' });
+
+            // Lưu token và userId vào localStorage
+            localStorage.setItem('Authorization', receive.data.authToken);
+            localStorage.setItem('userId', receive.data.userId);
+
+            navigate('/admin/home');
         } else {
-          toast.error("Invalid Credentials", { autoClose: 500, theme: 'colored' })
+            toast.error("Invalid Credentials", { autoClose: 500, theme: 'colored' });
         }
-      }
+    } catch (error) {
+        if (error.response) {
+            toast.error(`Error: ${error.response.data.message || "Invalid Credentials"}`, { autoClose: 500, theme: 'colored' });
+            console.error("Server Error:", error.response.data);
+        } else if (error.request) {
+            toast.error("No response from server. Please try again later.", { autoClose: 500, theme: 'colored' });
+            console.error("No Response:", error.request);
+        } else {
+            toast.error(`Error: ${error.message}`, { autoClose: 500, theme: 'colored' });
+            console.error("Error:", error.message);
+        }
     }
-    catch (error) {
-      toast.error("Invalid Credentials", { autoClose: 500, theme: 'colored' })
-    }
-
-  }
-
+};
 
   return (
     <Container component="main" maxWidth="xs">
@@ -89,10 +88,10 @@ const AdminLogin = () => {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            value={credentials.email}
-            name='email'
+            id="username"
+            label="Username"
+            value={credentials.username}
+            name='username'
             onChange={handleOnChange}
             autoFocus
           />
@@ -108,22 +107,11 @@ const AdminLogin = () => {
             id="password"
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end" onClick={handleClickShowPassword} sx={{cursor:'pointer'}}>
+                <InputAdornment position="end" onClick={handleClickShowPassword} sx={{ cursor: 'pointer' }}>
                   {showPassword ? <RiEyeFill /> : <RiEyeOffFill />}
                 </InputAdornment>
               )
             }}
-
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            value={credentials.key}
-            name='key'
-            onChange={handleOnChange}
-            label="Admin Code"
-            type="password"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -153,7 +141,7 @@ const AdminLogin = () => {
       </Box>
       <CopyRight sx={{ mt: 8, mb: 4 }} />
     </Container>
-  )
-}
+  );
+};
 
-export default AdminLogin
+export default AdminLogin;

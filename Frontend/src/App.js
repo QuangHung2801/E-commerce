@@ -21,6 +21,8 @@ import AdminRegister from './Admin/Auth/Register/AdminRegister';
 import AdminHomePage from './Admin/Pages/AdminHomePage';
 import SingleUserPage from './Admin/Pages/SingleUserPage';
 import SingleProduct from './Admin/Pages/SingleProduct';
+import MyOrders from './Pages/Orders/MyOrders';
+import Invoice from './Pages/Orders/Invoice';
 
 
 
@@ -46,8 +48,9 @@ function App() {
             <Route path='/update' element={<UpdateDetails />} />
             <Route path='/paymentsuccess' element={<PaymentSuccess />} />
             <Route path='/forgotpassword' element={<ForgotPasswordForm />} />
-            <Route path='/user/reset/:id/:token' element={<AddNewPassword />} />
-
+            <Route path="/auth/resetpassword/:token" element={<AddNewPassword />} />
+            <Route path='/my-orders' element={<MyOrders />} />
+            <Route path='/invoice/:orderId' element={<Invoice />} />
             {/* Admin Routes */}
             <Route path="/admin/login" element={< AdminLogin />} />
             <Route path='/admin/register' element={<AdminRegister />} />
